@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>test</title>
+</head>
+    <body>
+        <div style="position:absolute;bottom:0;right:0">
+            key:
+            1 set sprite as cacheAsBitmap = true
+            2 set sprite as cacheAsBitmap = true
+            3 change text to "123"
+            3 change text to "456"
+        </div>
+        <script src="bin/pixi.js"></script>
+        <script>
+            var stage, renderer;
+            var sprite, text;
+            var assets = ["img/1.png", "font/Gothic.fnt"];
+            var assetLoader = new PIXI.AssetLoader(assets, true);
+            assetLoader.onComplete = function () {
+                renderer = PIXI.autoDetectRenderer(800, 600);
+                document.getElementsByTagName("body")[0].appendChild(renderer.view);
+
+                stage = new PIXI.Stage(0x000000, true);
+                sprite = PIXI.Sprite.fromFrame(assets[0]);
+                text = new PIXI.BitmapText("0", { font: "20px Gothic" });
+                sprite.addChild(text);
+                stage.addChild(sprite);
+
+                requestAnimationFrame(render);
+
+                document.addEventListener('keyup', keyup);
+            };
+            assetLoader.load();
+
+            function render() {
+                renderer.render(stage);
+                requestAnimationFrame(render);
+            }
+
+            function keyup(event) {
+                if (event.keycode == 49) {
+                    sprite.cacheAsBitmap = true;
+                    text.cacheAsBitmap = false;
+                    return;
+                }
+                else if (event.keyCode == 50) {
+                    sprite.cacheAsBitmap = false;
+                    text.cacheAsBitmap = true;
+                    return;
+                }
+                else if (event.keyCode == 51) {
+                    text.setText("123");
+                }
+                else if (event.keyCode == 52) {
+                    text.setText("456");
+                }
+                if (sprite._cacheAsBitmap)
+                    sprite.updateCache();
+                if (text._cacheAsBitmap)
+                    text.updateCache();
+            }
+        </script>
+    </body>
+</html>
